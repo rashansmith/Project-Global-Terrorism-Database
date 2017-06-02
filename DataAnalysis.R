@@ -11,24 +11,24 @@
 ######## Install Packages/Load Libraries #########
 ##################################################
 
-#install.packages("Lock5Data")
-#install.packages("ggplot2")
-#install.packages("corrplot")
-#install.packages("aplpack")
-#install.packages("modes")
-#install.packages("googlevis")
-#install.packages("caret")
-#install.packages("mlbench")
-#install.packages("FSelector")
-#install.packages("rpart")
-#install.packages("mice")
+install.packages("Lock5Data")
+install.packages("ggplot2")
+install.packages("corrplot")
+install.packages("aplpack")
+install.packages("modes")
+install.packages("googlevis")
+install.packages("caret")
+install.packages("mlbench")
+install.packages("FSelector")
+install.packages("rpart")
+install.packages("mice")
 
-#install.packages("car")
-#install.packages("lattice")
-#install.packages("Hmisc")
-#install.packages("caret")
-#install.packages("RWeka")
-#install.packages("e1071")
+install.packages("car")
+install.packages("lattice")
+install.packages("Hmisc")
+install.packages("caret")
+install.packages("RWeka")
+install.packages("e1071")
 
 library(FSelector)
 library(rpart)
@@ -57,20 +57,20 @@ globalterrorismdata <- read.csv("globalterrorismdata.csv")
 ####################################
 
 # Summarize the features
-#summary(globalterrorismdata) 
-#str(globalterrorismdata)
+summary(globalterrorismdata) 
+str(globalterrorismdata)
 
-# take a random sample of size 200 from a dataset mydata
+# take a random sample of size 10000 from a dataset mydata
 # sample without replacement
 mysample <- globalterrorismdata[sample(1:nrow(globalterrorismdata), 10000,
                                        replace=FALSE),] 
 
 
 ### Check for missing data (to help eliminate amount of features from the start) ###
-#pMiss <- function(x){sum(is.na(x))/length(x)*100}
-#apply(mysample,2,pMiss)
-#apply(mysample,1,pMiss)
-#sink("missingValues.txt")
+pMiss <- function(x){sum(is.na(x))/length(x)*100}
+apply(mysample,2,pMiss)
+apply(mysample,1,pMiss)
+sink("missingValues.txt")
 
 subglobaldata <- mysample[ c(2, 3, 4, 8, 10, 16, 23, 26, 27, 28, 29, 35, 41, 64, 69, 84 )]
 subglobaldata2 <- mysample[ c(2, 3, 4, 8, 10,14, 15, 16, 20, 23, 26, 27, 28, 29, 35, 37, 41, 64, 69, 84 )]
@@ -78,7 +78,7 @@ subglobaldata2 <- mysample[ c(2, 3, 4, 8, 10,14, 15, 16, 20, 23, 26, 27, 28, 29,
 
 
 ################################################################
-## Select features for Iris data using correlation and entropy #
+## Select features for global terrorism data analysis #
 ################################################################
 result <- cfs(region ~ ., subglobaldata)
 
@@ -88,18 +88,17 @@ ce <- as.simple.formula(result, "region")
 # Display the selected subset of features
 print(ce)
 
-
 # ggplot2 will be used for plots
 require(ggplot2)
 plot(subglobaldata, main="Scatter Plot Matrix for GTD Data")
 
-# Bar Plot
+# Bar Plot of Regions
 ggplot(subglobaldata, aes(x = region)) + geom_bar()
 
-# Bar Plot
+# Bar Plot of Years
 ggplot(subglobaldata, aes(x = iyear)) + geom_bar()
       
-# Bar Plot
+# Bar Plot of Attack Types
 ggplot(subglobaldata, aes(x = attacktype1)) + geom_bar()
 
 
@@ -107,7 +106,7 @@ ggplot(subglobaldata, aes(x = attacktype1)) + geom_bar()
 hist(subglobaldata$region, prob=TRUE, main="Histogram of Regions")
 
 # Correlation Plot
-#plotting the correlation plot of three features
+# plotting the correlation plot of three features
 corr3 <- cor(subglobaldata)
 corrplot(corr3, method="shade")
 
@@ -174,7 +173,6 @@ cutoff.k(subglobaldata.rf.scores, k = 3)
 cutoff.k.percent(subglobaldata.rf.scores, 0.4)
 
 
-
 #####################################################################
 ## Select features for Terrorism data using correlation and entropy #
 #####################################################################
@@ -189,14 +187,13 @@ print(ce)
 print("................")
 
 
-
 ################################################
 ## MODELING                                    #
 ##                                             #
 ## Decision Tree, Rule Set and SVM             #
 ################################################
 
-# Creating Subset from Actual Data Now
+# Creating Subset from Actual Data 
 subData <- subglobaldata[ c(1, 5, 11, 12, 16 )]
 
 subData$iyear <- factor(subData$iyear)
@@ -251,8 +248,6 @@ plot(gtd.model.svm, subData.train)
 #########################################################################
 #subData.logmodel.reg <- glm(region~ ., data=subData.train, family=binomial(link="logit"))
 #summary(subData.logmodel.reg)
-
-
 
 
 
